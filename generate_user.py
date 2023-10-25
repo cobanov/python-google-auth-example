@@ -31,11 +31,14 @@ class TOTPGenerator:
 
         return uri
 
-    def generate_qr_code(self, filename):
+    def generate_qr_code(self):
+        os.makedirs("qr_codes", exist_ok=True)
+        os.path.join("qr_codes", f"qr_{self.totp_generator.unique_id}.png")
+        qr_code_filename = f"qr_codes/qr_{self.totp_generator.unique_id}.png"
         uri = self.generate_totp_uri()
         img = qrcode.make(uri)
-        img.save(filename)
-        print(f"QR code saved as '{filename}'")
+        img.save(qr_code_filename)
+        print(f"QR code saved as '{qr_code_filename}'")
 
 
 def initialize_database():
@@ -52,14 +55,3 @@ def initialize_database():
         """
         )
         conn.commit()
-
-
-if __name__ == "__main__":
-    os.makedirs("qr_codes", exist_ok=True)
-    email = "mertcobanov@gmail.com"
-
-    initialize_database()
-
-    totp_generator = TOTPGenerator(email, issuer_name="Cobanov")
-    qr_code_filename = f"qr_codes/qr_{totp_generator.unique_id}.png"
-    totp_generator.generate_qr_code(qr_code_filename)
